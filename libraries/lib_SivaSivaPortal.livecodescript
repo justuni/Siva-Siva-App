@@ -86,23 +86,22 @@ command portal_GoStack cardOrStackObject
    
    ntInfo "about to change stacks from: " & oStackName & " to " & cardOrStackObject
    
-   --   if isMobile() then
-   --      if mobileOrientation() begins with "l" then
-   --         set the fullscreenmode of this stack to "exactFit"
-   --      end if
-   --   end if
-   
    --breakpoint
-   close stack oStackName
-   go cardOrStackObject
    
    --if the lockScreen is true then unlock screen
    
-   if  oStackName is "Siva-Siva-Portal" then 
+   if oStackName is "Siva-Siva-Portal" then 
       put "navigation/topindex" into pAction
+      if cardOrStackObject contains "SivaSivaBrowser" then
+         -- do not close stack
+      else
+         close stack oStackName
+      end if
    else 
       put "navigation/goContent" into pAction
+      close stack oStackName
    end if
+   go cardOrStackObject
    
    if the short name of this stack is "Siva-Siva-Portal" then
       news_Fetch
@@ -250,6 +249,7 @@ end portal_Link
 command portal_GoUrl pURL,pJournalLabel
    local tRequiresLandscape, oStackName, tBrowserView, pTrackdata
    
+   put the long name of cd "SivaSivaBrowser" of stack "Siva-Siva-Portal" into tBrowserView
    put ("youtube.com","1988-apple-video") into tRequiresLandscape
    
    if requiresConnection(sLastLinkTitle) = "false" then
@@ -265,16 +265,19 @@ command portal_GoUrl pURL,pJournalLabel
    put the short name of this stack into oStackName
    repeat for each item x  in tRequiresLandscape
       if  pURL contains x then
-         put "goLandscape" into tBrowserView
+         --put "goLandscape" into tBrowserView
+         set the uLandscapeOnly of tBrowserView to "yes"
       end if
    end repeat
-   if  tBrowserView = "goLandscape" then
-      portal_GoStack "view_BrowserLandscape"
-      send "setBrowserURL pURL"  to cd "SivaSivaBrowser" of stack "view_BrowserLandscape" in 100 milliseconds
-   else
-      portal_GoStack "view_SivaSivaBrowser"     
-      send "setBrowserURL pURL" to cd "SivaSivaBrowser" of stack "view_SivaSivaBrowser" in 100 milliseconds
-   end if
+   portal_GoStack tBrowserView
+   send "setBrowserURL pURL" to tBrowserView in 100 milliseconds
+   --   if  tBrowserView = "goLandscape" then
+   --      portal_GoStack "view_BrowserLandscape"
+   --      send "setBrowserURL pURL"  to cd "SivaSivaBrowser" of stack "view_BrowserLandscape" in 100 milliseconds
+   --   else
+   --      portal_GoStack "view_SivaSivaBrowser"     
+   --      send "setBrowserURL pURL" to cd "SivaSivaBrowser" of stack "view_SivaSivaBrowser" in 100 milliseconds
+   --   end if
    
    put pURL into pTrackdata["webUrl"]
    tracking_RecordActivity oStackName, "navigation/webview", pTrackdata
@@ -287,8 +290,13 @@ command portal_LaunchUrl someURL
 end portal_LaunchUrl
 
 command portal_GoLandscapeUrl someURL
-   set the browser_URL [true] of stack "view_SivaSivaBrowser" to someURL
-   portal_GoStack "view_SivaSivaBrowser"
+   local tBrowserView
+   put the long name of cd "SivaSivaBrowser" of stack "Siva-Siva-Portal" into tBrowserView
+   set the uLandscapeOnly of tBrowserView to "yes"
+   portal_GoStack tBrowserView
+   send "setBrowserURL someURL" to tBrowserView in 100 milliseconds
+   --   set the browser_URL [true] of stack "view_SivaSivaBrowser" to someURL
+   --   portal_GoStack "view_SivaSivaBrowser"
 end portal_GoLandscapeUrl
 
 command portal_SetCurrentPortal portalName

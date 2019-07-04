@@ -134,6 +134,19 @@
 * ID: card id 8168 of stack "Siva-Siva-Portal"
 * [stack_Siva-Siva-Portal_card_id_8168](./ScriptTracker/Siva-Siva-Portal_Scripts/stack_Siva-Siva-Portal_card_id_8168.livecodescript)
 
+**group "footerNavigation" of card "SivaSivaBrowser" of stack "Siva-Siva-Portal"**
+* ID: group id 65140 of card id 65147 of stack "Siva-Siva-Portal"
+* [stack_Siva-Siva-Portal_group_id_65140](./ScriptTracker/Siva-Siva-Portal_Scripts/stack_Siva-Siva-Portal_group_id_65140.livecodescript)
+
+**button "Load HTML" of card "SivaSivaBrowser" of stack "Siva-Siva-Portal"**
+* ID: button id 65144 of card id 65147 of stack "Siva-Siva-Portal"
+* [stack_Siva-Siva-Portal_button_id_65144](./ScriptTracker/Siva-Siva-Portal_Scripts/stack_Siva-Siva-Portal_button_id_65144.livecodescript)
+
+**group "share-ui" of card "SivaSivaBrowser" of stack "Siva-Siva-Portal"**
+* ID: group id 65145 of card id 65147 of stack "Siva-Siva-Portal"
+* Behavior: stack "behavior_SocialShare"
+* [stack_Siva-Siva-Portal_group_id_65145](./ScriptTracker/Siva-Siva-Portal_Scripts/stack_Siva-Siva-Portal_group_id_65145.livecodescript)
+
 **button "Behavior Script" of card id 1005 of stack "Data Grid Templates 1544299986164" of stack "Siva-Siva-Portal"**
 * ID: button id 1009 of card id 1005 of stack "Data Grid Templates 1544299986164" of stack "Siva-Siva-Portal"
 * Behavior: button id 1174 of stack "revDataGridLibrary"
