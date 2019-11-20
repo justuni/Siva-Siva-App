@@ -11,7 +11,7 @@ CONSTANT kLEVELS="Primary Colors,Tertiary Colors,Transmute to Whilte"
 # pass the user settings array units to locals for easeier coding
 # Note: Hide and show controls impact performance 
 # instead we are trying to leave all fields vis and text on empty into each field.
- 
+
 
 on preopencard
    -- breakpoint
@@ -53,7 +53,7 @@ on preopencard
    set the itemdel to tab
    put the number of items of sColors into sColorsTotal
    put 0 into sCurrentColor #this is an integer which tell us we item of sColor we are on
- 
+   
    
    # clear the stage in case anything left over from 
    # previous run
@@ -62,7 +62,7 @@ on preopencard
    put 0 into sStopFlag   
    
    # Need to store the current color count in the stack
-   
+   pass preOpenCard
 end preopencard
 
 --on opencard
@@ -70,6 +70,7 @@ end preopencard
 --end opencard
 
 on mouseUp 
+   local tTarget, tCurrentLevel
    
    put short name  of the target into tTarget
    
@@ -188,12 +189,13 @@ command colorBreathingCycle sCycles
    --wait 30 milliseconds with messages
    
    put sCycles - 1 into sCycles
-
+   
    colorHueBreath
    
 end colorBreathingCycle
 
 command colorHueBreath
+   local tColorLine
    --breakpoint
    -- we are going through each color
    -- after we finish all color 
@@ -231,7 +233,7 @@ command colorHueBreath
       set the backgroundcolor of grc "currentColor" to sColorValue 
    end if
    put  "Visualize" & cr &  sColorName  into fld "practiceInstructions"
-
+   
    
    -- Now we  inhale
    put 0 into sCountDown 
@@ -272,7 +274,7 @@ end colorInhalation
 
 
 command colorExhalation
-   local sCurrentblendLevel
+   local sCurrentblendLevel, sIncrementBlendLevel
    
    put 100 / sBreathCount  into  sIncrementBlendLevel
    
@@ -311,7 +313,7 @@ command colorExhalation
    
    if sCountDown=sBreathCount then 
       
-      put empty into fld practiceInstructions
+      put empty into fld "practiceInstructions"
       put "Hold"into fld "breathPhase"
       put "1" into fld "breathCount"
       
@@ -337,10 +339,11 @@ end colorExhalation
 ## Inform user they can adjust settings to 
 
 on interruptColorShow
+   local pTrackdata
    if  isMobile() then
       mobileClearTouches
    end if
-
+   
    put 1 into sStopFlag
    setUpLevel sLevel
    hide widget "pause"
@@ -352,11 +355,14 @@ end interruptColorShow
 on closeCard
    # cleanup 
    put empty into fld "title"
-  put empty into fld "ProgressMessage"  
+   put empty into fld "ProgressMessage"  
    hide grc "currentColor"
+   put empty into fld "breathCount"  
+   put empty into fld "breathPhase"
 end closeCard
 
 on showCompletion
+   local tRounds, pSoundFile, pTrackdata
    
    setUpLevel sLevel
    hide widget "Pause"
@@ -381,8 +387,9 @@ on showCompletion
    put item sLevel of kLEVELS into pTrackdata["colorLevel"]
    tracking_RecordActivity "Color Meditation", "practice/completed", pTrackdata
 end showCompletion
-   
+
 command getUserPrefs
+   local tSettings
    # Fetch User Prefs
    put getUserPreferences() into tSettings
    put tSettings["breathCount"] into sBreathCount

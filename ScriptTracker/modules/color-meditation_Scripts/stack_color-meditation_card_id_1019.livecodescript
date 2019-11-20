@@ -7,14 +7,17 @@ Script "stack_color-meditation_card_id_1019"
 
 
 on preopencard
+   local pColor2
    showTools
    show fld "moduleTitle"
+   show grc "Start"
    put "255,0,255" into pColor2
-   send "setfillGradient ,,,pColor2,,," to grc colorMeditationBkgnd
+   send "setfillGradient ,,,pColor2,,," to grc "colorMeditationBkgnd"
+   pass preOpenCard
 end preopencard
 
 on opencard
-   send  colorizeControlChars && "moduleTitle" to this stack in 200 milliseconds
+   send  "colorizeControlChars" && "moduleTitle" to this stack in 200 milliseconds
    pass opencard
 end opencard
    

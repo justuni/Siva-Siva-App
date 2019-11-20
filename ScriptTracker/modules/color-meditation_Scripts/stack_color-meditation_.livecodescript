@@ -15,9 +15,9 @@ local  sBreathCount, sBreathPace, sCycles,sAudioOn
 # So we are using sLastLevel for the actual color meditation level
 
 on preopenstack
-   set the fullscreenmode of this stack to "showAll" -- better for wider screens
+   --set the fullscreenmode of this stack to "showAll" -- better for wider screens
    if isMobile() then    
-      mobileSetAllowedOrientations "portrait,portrain upside down"
+      mobileSetAllowedOrientations "portrait,portrait upside down"
    end if
    initializeColorMeditation
 end preopenstack
@@ -66,8 +66,69 @@ on closeStack
    addJournalEntry
    portal_SetLastStack "color-meditation"
 end closeStack
- 
 
+####### RESPONSIVE DESIGN
+##############################
+
+on preOpenCard
+   if the environment is not "development" then
+      updateUI
+   end if
+end preOpenCard
+
+on resizeStack
+   setCardCoords
+   updateUI
+end resizeStack
+
+on updateUI
+   local tHeader, tFooter, tControl, tRect
+   
+   put the long id of grp "contentCardHeader" into tHeader
+   set the width of tHeader to CardWidth()
+   topCenterMe tHeader
+   
+   put the long id of grp "colorMedsToolbar" into tFooter
+   bottomCenterMe tFooter, 24
+   
+   put the long id of grp "aboutDisplay" into tControl
+   centerMe tControl, 0, 62
+   
+   if the short name of this card is "runColors" then
+      put the long id of grc "currentColor" into tControl
+      set the rect of tControl to CardRect()
+      
+      put the long id of grp "breathControl" into tControl
+      bottomCenterMe tControl, 100
+      
+      put the long id of fld "progressMessage" into tControl
+      centerMe tControl, 0, 100
+      
+      put the long id of widget "pause" into tControl
+      bottomCenterMe tControl, 34
+   else
+      put the long id of grc "colorMeditationBkgnd" into tControl
+      set the rect of tControl to CardRect()
+      
+      put the long id of grp "titleControls" into tControl
+      topCenterMe tControl, 214
+   end if
+   
+   if the short name of this card is "levelsIndex" then
+      put the long id of grp "levelsLinks" into tControl
+      centerMe tControl, the height of tHeader, 116
+   end if
+   
+   if the short name of this card is "colorPreferences" then
+      put the long id of grp "prefsSelectorGrp" into tControl
+      set the height of tControl to \
+            the top of tFooter - bottom of tHeader
+      centerMe tControl, the height of tHeader, 116
+      put the long id of grp "cardBody" into tControl
+      centerMe tControl, 100, 116
+   end if
+   
+end updateUI
 
 ####### SOUND CONTROL
 #############################
@@ -158,18 +219,18 @@ end displayAbout
 -
 
 function getUserPreferences    
-    put  getPref ("preferences/modules/color-meditation") into aColorMedPrefs
-    if aColorMedPrefs is empty then  # first run  we set defaults
-        put 4 into sBreathCount
-        put 1 into sBreathPace
-        put 1 into sCycles
-    else
-        put aColorMedPrefs["breathCount"] into sBreathCount
-        put aColorMedPrefs["breathPace"] into sBreathPace
-        put aColorMedPrefs["cycles"] into sCycles
-        put aColorMedPrefs["audioOn"]  into sAudioOn  
-        return aColorMedPrefs
-    end if
+   put  getPref ("preferences/modules/color-meditation") into aColorMedPrefs
+   if aColorMedPrefs is empty then  # first run  we set defaults
+      put 4 into sBreathCount
+      put 1 into sBreathPace
+      put 1 into sCycles
+   else
+      put aColorMedPrefs["breathCount"] into sBreathCount
+      put aColorMedPrefs["breathPace"] into sBreathPace
+      put aColorMedPrefs["cycles"] into sCycles
+      put aColorMedPrefs["audioOn"]  into sAudioOn  
+      return aColorMedPrefs
+   end if
 end getUserPreferences
 
 command saveUserPrefs
@@ -183,8 +244,8 @@ command saveUserPrefs
    # instantiate new values on the fly
    get getUserPreferences()
 end saveUserPrefs
-            
-            
+
+
 function calculateTimeToCompletion
    local tCompletionTime, tKumbhakaTime
    if sColorCount is empty then put 3 into sColorCount # user got to preferences directly
@@ -212,7 +273,7 @@ command setCurrentLevel pLevel
          put 6 into sColorCount
          break
    end switch
-     
+   
 end setCurrentLevel
 
 function getCurrentLevel
@@ -235,7 +296,7 @@ command setBackGroundGradient pColor2
       send "setfillGradient ,,,sCurrentFillGradientColor,,," to grc "colorMeditationBkgnd"
    end try
 end setBackGroundGradient
-   
+
 on colorizeControlChars pControl
    local y
    # only works for fields
@@ -254,7 +315,7 @@ function getColorWheel
    sort tWheelIndex numeric ascending
    repeat for each line x in tWheelIndex
       put  sColorA["color-meditation"]["colorwheel"][x]["name"]  &tab&\
-       sColorA["color-meditation"]["colorwheel"][x]["color"] & cr after aColorList
+            sColorA["color-meditation"]["colorwheel"][x]["color"] & cr after aColorList
    end repeat
    return aColorList
 end getColorWheel
