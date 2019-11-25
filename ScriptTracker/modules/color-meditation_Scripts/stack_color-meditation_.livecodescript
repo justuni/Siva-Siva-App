@@ -15,7 +15,6 @@ local  sBreathCount, sBreathPace, sCycles,sAudioOn
 # So we are using sLastLevel for the actual color meditation level
 
 on preopenstack
-   --set the fullscreenmode of this stack to "showAll" -- better for wider screens
    if isMobile() then    
       mobileSetAllowedOrientations "portrait,portrait upside down"
    end if
@@ -42,7 +41,7 @@ command initializeColorMeditation
    put ("255,0,255") into sCurrentFillGradientColor
    setBackGroundGradient sCurrentFillGradientColor
    setCurrentLevel ("colorOpening")  
-   put sivasiva_GetModuleFolder ("color-meditation") into sMylocation 
+   put sivasiva_GetModuleFolder ("color-meditation") into sMylocation
    get getUserPreferences()
 end initializeColorMeditation
 
@@ -71,9 +70,7 @@ end closeStack
 ##############################
 
 on preOpenCard
-   if the environment is not "development" then
-      updateUI
-   end if
+   updateUI
 end preOpenCard
 
 on resizeStack
@@ -82,7 +79,12 @@ on resizeStack
 end resizeStack
 
 on updateUI
-   local tHeader, tFooter, tControl, tRect
+   local tHeader, tFooter, tControl, tRect, tCardRect
+   
+   put CardRect() into tCardRect
+   
+   -- check to see if the card has already been updated
+   if the uCardRect of this card is tCardRect then exit updateUI
    
    put the long id of grp "contentCardHeader" into tHeader
    set the width of tHeader to CardWidth()
@@ -96,7 +98,7 @@ on updateUI
    
    if the short name of this card is "runColors" then
       put the long id of grc "currentColor" into tControl
-      set the rect of tControl to CardRect()
+      set the rect of tControl to tCardRect
       
       put the long id of grp "breathControl" into tControl
       bottomCenterMe tControl, 100
@@ -108,7 +110,7 @@ on updateUI
       bottomCenterMe tControl, 34
    else
       put the long id of grc "colorMeditationBkgnd" into tControl
-      set the rect of tControl to CardRect()
+      set the rect of tControl to tCardRect
       
       put the long id of grp "titleControls" into tControl
       topCenterMe tControl, 214
@@ -128,6 +130,7 @@ on updateUI
       centerMe tControl, 100, 116
    end if
    
+   set the uCardRect of this card to tCardRect
 end updateUI
 
 ####### SOUND CONTROL

@@ -7,12 +7,12 @@ Script "stack_color-meditation_card_id_1019"
 
 
 on preopencard
-   local pColor2
+   local tColor
    showTools
    show fld "moduleTitle"
    show grc "Start"
-   put "255,0,255" into pColor2
-   send "setfillGradient ,,,pColor2,,," to grc "colorMeditationBkgnd"
+   put "255,0,255" into tColor
+   send "setfillGradient ,,,tColor,,," to grc "colorMeditationBkgnd"
    pass preOpenCard
 end preopencard
 
